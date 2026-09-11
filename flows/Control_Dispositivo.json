@@ -1,0 +1,717 @@
+[
+    {
+        "id": "ctl_tab_001",
+        "type": "tab",
+        "label": "Control Dispositivo",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "ctl_mqtt_out",
+        "type": "mqtt out",
+        "z": "ctl_tab_001",
+        "name": "Comandos IoT",
+        "topic": "isil/stations/001/commands",
+        "qos": "0",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "a8f386f34b537888",
+        "x": 800,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "ctl_sw_r1",
+        "type": "ui-switch",
+        "z": "ctl_tab_001",
+        "name": "Relay 1",
+        "label": "Relay 1",
+        "group": "ctl_grp_relay",
+        "order": 1,
+        "width": 3,
+        "height": 1,
+        "passthru": false,
+        "topic": "topic",
+        "topicType": "msg",
+        "style": "",
+        "className": "",
+        "layout": "row-spread",
+        "clickableArea": "switch",
+        "onvalue": "1",
+        "onvalueType": "num",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "0",
+        "offvalueType": "num",
+        "officon": "",
+        "offcolor": "",
+        "x": 140,
+        "y": 120,
+        "wires": [
+            [
+                "ctl_func_r1"
+            ]
+        ]
+    },
+    {
+        "id": "ctl_func_r1",
+        "type": "function",
+        "z": "ctl_tab_001",
+        "name": "Cmd Relay 1",
+        "func": "var estado = msg.payload;\nmsg.payload = {key: 'relay', id: '1', value: estado};\n\n// Registrar operacion\nvar ops = flow.get('operaciones') || [];\nvar now = new Date();\nvar fecha = now.toLocaleDateString('es-PE') + ' ' + now.toLocaleTimeString('es-PE');\nops.unshift({fecha: fecha, salida: 'Relay1', valor: estado === 1 ? 'On' : 'Off'});\nif (ops.length > 20) ops.pop();\nflow.set('operaciones', ops);\n\nnode.send([msg, {payload: ops}]);\nreturn null;",
+        "outputs": 2,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 400,
+        "y": 120,
+        "wires": [
+            [
+                "ctl_mqtt_out"
+            ],
+            [
+                "ctl_tabla_ops"
+            ]
+        ]
+    },
+    {
+        "id": "ctl_sw_r2",
+        "type": "ui-switch",
+        "z": "ctl_tab_001",
+        "name": "Relay 2",
+        "label": "Relay 2",
+        "group": "ctl_grp_relay",
+        "order": 2,
+        "width": 3,
+        "height": 1,
+        "passthru": false,
+        "topic": "topic",
+        "topicType": "msg",
+        "style": "",
+        "className": "",
+        "layout": "row-spread",
+        "clickableArea": "switch",
+        "onvalue": "1",
+        "onvalueType": "num",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "0",
+        "offvalueType": "num",
+        "officon": "",
+        "offcolor": "",
+        "x": 140,
+        "y": 180,
+        "wires": [
+            [
+                "ctl_func_r2"
+            ]
+        ]
+    },
+    {
+        "id": "ctl_func_r2",
+        "type": "function",
+        "z": "ctl_tab_001",
+        "name": "Cmd Relay 2",
+        "func": "var estado = msg.payload;\nmsg.payload = {key: 'relay', id: '2', value: estado};\n\nvar ops = flow.get('operaciones') || [];\nvar now = new Date();\nvar fecha = now.toLocaleDateString('es-PE') + ' ' + now.toLocaleTimeString('es-PE');\nops.unshift({fecha: fecha, salida: 'Relay2', valor: estado === 1 ? 'On' : 'Off'});\nif (ops.length > 20) ops.pop();\nflow.set('operaciones', ops);\n\nnode.send([msg, {payload: ops}]);\nreturn null;",
+        "outputs": 2,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 400,
+        "y": 180,
+        "wires": [
+            [
+                "ctl_mqtt_out"
+            ],
+            [
+                "ctl_tabla_ops"
+            ]
+        ]
+    },
+    {
+        "id": "ctl_sw_r3",
+        "type": "ui-switch",
+        "z": "ctl_tab_001",
+        "name": "Relay 3",
+        "label": "Relay 3",
+        "group": "ctl_grp_relay",
+        "order": 3,
+        "width": 3,
+        "height": 1,
+        "passthru": false,
+        "topic": "topic",
+        "topicType": "msg",
+        "style": "",
+        "className": "",
+        "layout": "row-spread",
+        "clickableArea": "switch",
+        "onvalue": "1",
+        "onvalueType": "num",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "0",
+        "offvalueType": "num",
+        "officon": "",
+        "offcolor": "",
+        "x": 140,
+        "y": 240,
+        "wires": [
+            [
+                "ctl_func_r3"
+            ]
+        ]
+    },
+    {
+        "id": "ctl_func_r3",
+        "type": "function",
+        "z": "ctl_tab_001",
+        "name": "Cmd Relay 3",
+        "func": "var estado = msg.payload;\nmsg.payload = {key: 'relay', id: '3', value: estado};\n\nvar ops = flow.get('operaciones') || [];\nvar now = new Date();\nvar fecha = now.toLocaleDateString('es-PE') + ' ' + now.toLocaleTimeString('es-PE');\nops.unshift({fecha: fecha, salida: 'Relay3', valor: estado === 1 ? 'On' : 'Off'});\nif (ops.length > 20) ops.pop();\nflow.set('operaciones', ops);\n\nnode.send([msg, {payload: ops}]);\nreturn null;",
+        "outputs": 2,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 400,
+        "y": 240,
+        "wires": [
+            [
+                "ctl_mqtt_out"
+            ],
+            [
+                "ctl_tabla_ops"
+            ]
+        ]
+    },
+    {
+        "id": "ctl_sw_r4",
+        "type": "ui-switch",
+        "z": "ctl_tab_001",
+        "name": "Relay 4",
+        "label": "Relay 4",
+        "group": "ctl_grp_relay",
+        "order": 4,
+        "width": 3,
+        "height": 1,
+        "passthru": false,
+        "topic": "topic",
+        "topicType": "msg",
+        "style": "",
+        "className": "",
+        "layout": "row-spread",
+        "clickableArea": "switch",
+        "onvalue": "1",
+        "onvalueType": "num",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "0",
+        "offvalueType": "num",
+        "officon": "",
+        "offcolor": "",
+        "x": 140,
+        "y": 300,
+        "wires": [
+            [
+                "ctl_func_r4"
+            ]
+        ]
+    },
+    {
+        "id": "ctl_func_r4",
+        "type": "function",
+        "z": "ctl_tab_001",
+        "name": "Cmd Relay 4",
+        "func": "var estado = msg.payload;\nmsg.payload = {key: 'relay', id: '4', value: estado};\n\nvar ops = flow.get('operaciones') || [];\nvar now = new Date();\nvar fecha = now.toLocaleDateString('es-PE') + ' ' + now.toLocaleTimeString('es-PE');\nops.unshift({fecha: fecha, salida: 'Relay4', valor: estado === 1 ? 'On' : 'Off'});\nif (ops.length > 20) ops.pop();\nflow.set('operaciones', ops);\n\nnode.send([msg, {payload: ops}]);\nreturn null;",
+        "outputs": 2,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 400,
+        "y": 300,
+        "wires": [
+            [
+                "ctl_mqtt_out"
+            ],
+            [
+                "ctl_tabla_ops"
+            ]
+        ]
+    },
+    {
+        "id": "ctl_pwm1",
+        "type": "ui-slider",
+        "z": "ctl_tab_001",
+        "group": "ctl_grp_pwm",
+        "name": "PWM 1",
+        "label": "PWM 1",
+        "tooltip": "",
+        "order": 1,
+        "width": 4,
+        "height": 1,
+        "passthru": false,
+        "outs": "end",
+        "topic": "topic",
+        "topicType": "msg",
+        "thumbLabel": true,
+        "showTicks": "never",
+        "min": 0,
+        "max": "255",
+        "step": 1,
+        "className": "",
+        "iconPrepend": "",
+        "iconAppend": "",
+        "color": "",
+        "colorTrack": "",
+        "colorThumb": "",
+        "showTextField": true,
+        "x": 140,
+        "y": 400,
+        "wires": [
+            [
+                "ctl_func_pwm1"
+            ]
+        ]
+    },
+    {
+        "id": "ctl_func_pwm1",
+        "type": "function",
+        "z": "ctl_tab_001",
+        "name": "Cmd PWM 1",
+        "func": "var valor = msg.payload;\nmsg.payload = {key: 'pwm', id: '1', value: valor};\n\nvar ops = flow.get('operaciones') || [];\nvar now = new Date();\nvar fecha = now.toLocaleDateString('es-PE') + ' ' + now.toLocaleTimeString('es-PE');\nops.unshift({fecha: fecha, salida: 'PWM1', valor: String(valor)});\nif (ops.length > 20) ops.pop();\nflow.set('operaciones', ops);\n\nnode.send([msg, {payload: ops}]);\nreturn null;",
+        "outputs": 2,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 400,
+        "y": 400,
+        "wires": [
+            [
+                "ctl_mqtt_out"
+            ],
+            [
+                "ctl_tabla_ops"
+            ]
+        ]
+    },
+    {
+        "id": "ctl_pwm2",
+        "type": "ui-slider",
+        "z": "ctl_tab_001",
+        "group": "ctl_grp_pwm",
+        "name": "PWM 2",
+        "label": "PWM 2",
+        "tooltip": "",
+        "order": 2,
+        "width": 4,
+        "height": 1,
+        "passthru": false,
+        "outs": "end",
+        "topic": "topic",
+        "topicType": "msg",
+        "thumbLabel": true,
+        "showTicks": "never",
+        "min": 0,
+        "max": "255",
+        "step": 1,
+        "className": "",
+        "iconPrepend": "",
+        "iconAppend": "",
+        "color": "",
+        "colorTrack": "",
+        "colorThumb": "",
+        "showTextField": true,
+        "x": 140,
+        "y": 460,
+        "wires": [
+            [
+                "ctl_func_pwm2"
+            ]
+        ]
+    },
+    {
+        "id": "ctl_func_pwm2",
+        "type": "function",
+        "z": "ctl_tab_001",
+        "name": "Cmd PWM 2",
+        "func": "var valor = msg.payload;\nmsg.payload = {key: 'pwm', id: '2', value: valor};\n\nvar ops = flow.get('operaciones') || [];\nvar now = new Date();\nvar fecha = now.toLocaleDateString('es-PE') + ' ' + now.toLocaleTimeString('es-PE');\nops.unshift({fecha: fecha, salida: 'PWM2', valor: String(valor)});\nif (ops.length > 20) ops.pop();\nflow.set('operaciones', ops);\n\nnode.send([msg, {payload: ops}]);\nreturn null;",
+        "outputs": 2,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 400,
+        "y": 460,
+        "wires": [
+            [
+                "ctl_mqtt_out"
+            ],
+            [
+                "ctl_tabla_ops"
+            ]
+        ]
+    },
+    {
+        "id": "ctl_pwm3",
+        "type": "ui-slider",
+        "z": "ctl_tab_001",
+        "group": "ctl_grp_pwm",
+        "name": "PWM 3",
+        "label": "PWM 3",
+        "tooltip": "",
+        "order": 3,
+        "width": 4,
+        "height": 1,
+        "passthru": false,
+        "outs": "end",
+        "topic": "topic",
+        "topicType": "msg",
+        "thumbLabel": true,
+        "showTicks": "never",
+        "min": 0,
+        "max": "255",
+        "step": 1,
+        "className": "",
+        "iconPrepend": "",
+        "iconAppend": "",
+        "color": "",
+        "colorTrack": "",
+        "colorThumb": "",
+        "showTextField": true,
+        "x": 140,
+        "y": 520,
+        "wires": [
+            [
+                "ctl_func_pwm3"
+            ]
+        ]
+    },
+    {
+        "id": "ctl_func_pwm3",
+        "type": "function",
+        "z": "ctl_tab_001",
+        "name": "Cmd PWM 3",
+        "func": "var valor = msg.payload;\nmsg.payload = {key: 'pwm', id: '3', value: valor};\n\nvar ops = flow.get('operaciones') || [];\nvar now = new Date();\nvar fecha = now.toLocaleDateString('es-PE') + ' ' + now.toLocaleTimeString('es-PE');\nops.unshift({fecha: fecha, salida: 'PWM3', valor: String(valor)});\nif (ops.length > 20) ops.pop();\nflow.set('operaciones', ops);\n\nnode.send([msg, {payload: ops}]);\nreturn null;",
+        "outputs": 2,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 400,
+        "y": 520,
+        "wires": [
+            [
+                "ctl_mqtt_out"
+            ],
+            [
+                "ctl_tabla_ops"
+            ]
+        ]
+    },
+    {
+        "id": "ctl_tabla_ops",
+        "type": "ui-table",
+        "z": "ctl_tab_001",
+        "group": "ctl_grp_ops",
+        "name": "Tabla Operaciones",
+        "label": "Ultimas operaciones",
+        "order": 1,
+        "width": 5,
+        "height": 10,
+        "maxrows": "7",
+        "passthru": false,
+        "autocols": false,
+        "showSearch": true,
+        "selectionType": "none",
+        "columns": [
+            {
+                "key": "fecha",
+                "keyType": "key",
+                "title": "Fecha",
+                "type": "text",
+                "width": "",
+                "align": "left"
+            },
+            {
+                "key": "salida",
+                "keyType": "key",
+                "title": "Salida",
+                "type": "text",
+                "width": "",
+                "align": "left"
+            },
+            {
+                "key": "valor",
+                "keyType": "key",
+                "title": "Valor",
+                "type": "text",
+                "width": "",
+                "align": "left"
+            }
+        ],
+        "mobileBreakpoint": 767,
+        "mobileBreakpointType": "defaults",
+        "action": "replace",
+        "className": "",
+        "x": 800,
+        "y": 440,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ctl_mqtt_in_status",
+        "type": "mqtt in",
+        "z": "ctl_tab_001",
+        "name": "Estado I/O",
+        "topic": "isil/stations/001/commands/status",
+        "qos": "0",
+        "datatype": "json",
+        "broker": "a8f386f34b537888",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 130,
+        "y": 620,
+        "wires": [
+            [
+                "ctl_debug_status"
+            ]
+        ]
+    },
+    {
+        "id": "ctl_debug_status",
+        "type": "debug",
+        "z": "ctl_tab_001",
+        "name": "Status I/O",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 400,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "ctl_inj_status",
+        "type": "inject",
+        "z": "ctl_tab_001",
+        "name": "Pedir Status I/O",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "30",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 2,
+        "topic": "isil/stations/001/commands",
+        "payload": "{\"key\":\"status\"}",
+        "payloadType": "json",
+        "x": 140,
+        "y": 680,
+        "wires": [
+            [
+                "ctl_mqtt_out2"
+            ]
+        ]
+    },
+    {
+        "id": "ctl_mqtt_out2",
+        "type": "mqtt out",
+        "z": "ctl_tab_001",
+        "name": "Comandos IoT",
+        "topic": "",
+        "qos": "0",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "a8f386f34b537888",
+        "x": 400,
+        "y": 680,
+        "wires": []
+    },
+    {
+        "id": "a8f386f34b537888",
+        "type": "mqtt-broker",
+        "name": "EMQX",
+        "broker": "broker.emqx.io",
+        "port": 1883,
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": 4,
+        "keepalive": 60,
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "ctl_grp_relay",
+        "type": "ui-group",
+        "name": "Relay Outputs",
+        "page": "ctl_page_001",
+        "width": "3",
+        "height": "1",
+        "order": 1,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "ctl_grp_pwm",
+        "type": "ui-group",
+        "name": "PWM Control",
+        "page": "ctl_page_001",
+        "width": "4",
+        "height": "1",
+        "order": 2,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "ctl_grp_ops",
+        "type": "ui-group",
+        "name": "Ultimas operaciones",
+        "page": "ctl_page_001",
+        "width": "5",
+        "height": "1",
+        "order": 3,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "ctl_page_001",
+        "type": "ui-page",
+        "name": "Control Dispositivo",
+        "ui": "f49221ce38e40c07",
+        "path": "/control",
+        "icon": "mdi-toggle-switch",
+        "layout": "grid",
+        "theme": "d91eafa15f89a2e5",
+        "breakpoints": [
+            {
+                "name": "Default",
+                "px": "0",
+                "cols": "3"
+            },
+            {
+                "name": "Tablet",
+                "px": "576",
+                "cols": "6"
+            },
+            {
+                "name": "Small Desktop",
+                "px": "768",
+                "cols": "9"
+            },
+            {
+                "name": "Desktop",
+                "px": "1024",
+                "cols": "12"
+            }
+        ],
+        "order": 3,
+        "className": "",
+        "visible": "true",
+        "disabled": "false"
+    },
+    {
+        "id": "f49221ce38e40c07",
+        "type": "ui-base",
+        "name": "My Dashboard",
+        "path": "/dashboard",
+        "appIcon": "",
+        "includeClientData": true,
+        "acceptsClientConfig": [
+            "ui-notification",
+            "ui-control"
+        ],
+        "showPathInSidebar": false,
+        "headerContent": "page",
+        "navigationStyle": "default",
+        "titleBarStyle": "default",
+        "showReconnectNotification": true,
+        "notificationDisplayTime": 1,
+        "showDisconnectNotification": true,
+        "allowInstall": false
+    },
+    {
+        "id": "d91eafa15f89a2e5",
+        "type": "ui-theme",
+        "name": "Tema Proyecto IoT",
+        "colors": {
+            "surface": "#0F3D57",
+            "primary": "#0094CE",
+            "bgPage": "#15577A",
+            "groupBg": "#DCE6EB",
+            "groupOutline": "#9FB8C4"
+        },
+        "sizes": {
+            "density": "default",
+            "pagePadding": "16px",
+            "groupGap": "14px",
+            "groupBorderRadius": "10px",
+            "widgetGap": "12px"
+        }
+    },
+    {
+        "id": "4d696514c9295541",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "@flowfuse/node-red-dashboard": "1.30.2"
+        }
+    }
+]

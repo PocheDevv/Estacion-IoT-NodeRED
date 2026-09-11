@@ -1,0 +1,725 @@
+[
+    {
+        "id": "sen_tab_001",
+        "type": "tab",
+        "label": "Sensor Data",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "sen_mqtt_in",
+        "type": "mqtt in",
+        "z": "sen_tab_001",
+        "name": "Sensor Ambiental IoT",
+        "topic": "isil/stations/001/env_sensors/data",
+        "qos": "0",
+        "datatype": "json",
+        "broker": "a8f386f34b537888",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 160,
+        "y": 120,
+        "wires": [
+            [
+                "sen_func_parse",
+                "04636c879b8896b0",
+                "47b902e361cabe52"
+            ]
+        ]
+    },
+    {
+        "id": "sen_func_parse",
+        "type": "function",
+        "z": "sen_tab_001",
+        "name": "Parsear sensores",
+        "func": "var p = msg.payload;\n\nvar temp = p.temperatureC || 0;\nvar hum = p.humidity || 0;\nvar lux = p.luminousIntensity || 0;\nvar pres = p.atmosphericPressure || 0;\nvar elev = p.elevation || 0;\nvar uv = p.uvIntensity || 0;\nvar fecha = p.date || '';\n\n// Registro para la tabla\nvar registro = {\n    fecha: fecha,\n    temperatura: temp,\n    humedad: hum,\n    luminosidad: lux,\n    presion: pres,\n    uv: uv\n};\n\n// Acumular en contexto para la tabla (max 50 registros)\nvar tabla = context.get('tabla') || [];\ntabla.unshift(registro);\nif (tabla.length > 50) tabla.pop();\ncontext.set('tabla', tabla);\n\nreturn [\n    [{payload: pres + ' hPa'}],\n    [{payload: elev.toFixed(2) + ' msnm'}],\n    [{payload: uv}],\n    [{payload: hum, topic: 'Humedad'}],\n    [{payload: temp, topic: 'Temperatura'}],\n    [{payload: lux, topic: 'Luminosidad'}],\n    [{payload: tabla}]\n];",
+        "outputs": 7,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 400,
+        "y": 120,
+        "wires": [
+            [
+                "sen_txt_pres"
+            ],
+            [
+                "sen_txt_elev"
+            ],
+            [
+                "sen_uv_texto"
+            ],
+            [
+                "sen_gauge_hum",
+                "sen_chart_ht"
+            ],
+            [
+                "sen_gauge_temp",
+                "sen_chart_ht"
+            ],
+            [
+                "sen_gauge_lux",
+                "sen_chart_lux"
+            ],
+            [
+                "sen_tabla"
+            ]
+        ]
+    },
+    {
+        "id": "sen_txt_pres",
+        "type": "ui-text",
+        "z": "sen_tab_001",
+        "group": "sen_grp_baro",
+        "order": 1,
+        "width": 3,
+        "height": 1,
+        "name": "Presion Atmosferica",
+        "label": "Presión atmosférica",
+        "format": "{{msg.payload}}",
+        "layout": "col-center",
+        "style": false,
+        "font": "",
+        "fontSize": 16,
+        "color": "#717171",
+        "className": "",
+        "x": 700,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "sen_txt_elev",
+        "type": "ui-text",
+        "z": "sen_tab_001",
+        "group": "sen_grp_baro",
+        "order": 2,
+        "width": 3,
+        "height": 1,
+        "name": "Elevacion",
+        "label": "Elevación",
+        "format": "{{msg.payload}}",
+        "layout": "col-center",
+        "style": false,
+        "font": "",
+        "fontSize": 16,
+        "color": "#717171",
+        "className": "",
+        "x": 700,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "sen_gauge_hum",
+        "type": "ui-gauge",
+        "z": "sen_tab_001",
+        "name": "Humedad",
+        "group": "sen_grp_ht",
+        "order": 1,
+        "value": "payload",
+        "valueType": "msg",
+        "width": 3,
+        "height": 3,
+        "gtype": "gauge-34",
+        "gstyle": "needle",
+        "title": "Humedad",
+        "alwaysShowTitle": false,
+        "floatingTitlePosition": "top-left",
+        "units": "%",
+        "icon": "",
+        "prefix": "",
+        "suffix": "",
+        "segments": [
+            {
+                "from": "0",
+                "color": "#ea5353",
+                "text": "",
+                "textType": "label"
+            },
+            {
+                "from": "30",
+                "color": "#5cd65c",
+                "text": "",
+                "textType": "label"
+            },
+            {
+                "from": "80",
+                "color": "#ffc800",
+                "text": "",
+                "textType": "label"
+            }
+        ],
+        "min": "0",
+        "max": "100",
+        "sizeThickness": 16,
+        "sizeGap": 4,
+        "sizeKeyThickness": 8,
+        "styleRounded": true,
+        "styleGlow": false,
+        "className": "",
+        "x": 680,
+        "y": 200,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "sen_gauge_temp",
+        "type": "ui-gauge",
+        "z": "sen_tab_001",
+        "name": "Temperatura",
+        "group": "sen_grp_ht",
+        "order": 2,
+        "value": "payload",
+        "valueType": "msg",
+        "width": 3,
+        "height": 3,
+        "gtype": "gauge-34",
+        "gstyle": "needle",
+        "title": "Temperatura (°C)",
+        "alwaysShowTitle": false,
+        "floatingTitlePosition": "top-left",
+        "units": "°C",
+        "icon": "",
+        "prefix": "",
+        "suffix": "",
+        "segments": [
+            {
+                "from": "0",
+                "color": "#87CEEB",
+                "text": "",
+                "textType": "label"
+            },
+            {
+                "from": "18",
+                "color": "#ffc800",
+                "text": "",
+                "textType": "label"
+            },
+            {
+                "from": "28",
+                "color": "#ea5353",
+                "text": "",
+                "textType": "label"
+            }
+        ],
+        "min": "0",
+        "max": "40",
+        "sizeThickness": 16,
+        "sizeGap": 4,
+        "sizeKeyThickness": 8,
+        "styleRounded": true,
+        "styleGlow": false,
+        "className": "",
+        "x": 690,
+        "y": 240,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "sen_chart_ht",
+        "type": "ui-chart",
+        "z": "sen_tab_001",
+        "group": "sen_grp_ht",
+        "name": "Historico Temp Humedad",
+        "label": "Histórico de temperatura y humedad",
+        "order": 3,
+        "chartType": "line",
+        "category": "topic",
+        "categoryType": "msg",
+        "xAxisLabel": "",
+        "xAxisProperty": "",
+        "xAxisPropertyType": "timestamp",
+        "xAxisType": "time",
+        "xAxisFormat": "",
+        "xAxisFormatType": "{HH}:{mm}:{ss}",
+        "xmin": "",
+        "xmax": "",
+        "yAxisLabel": "",
+        "yAxisProperty": "payload",
+        "yAxisPropertyType": "msg",
+        "ymin": "0",
+        "ymax": "100",
+        "bins": 10,
+        "action": "append",
+        "stackSeries": false,
+        "pointShape": "circle",
+        "pointRadius": 3,
+        "showLegend": true,
+        "removeOlder": "24",
+        "removeOlderUnit": "3600",
+        "removeOlderPoints": "",
+        "colors": [
+            "#0095ff",
+            "#ff0000",
+            "#ff7f0e",
+            "#2ca02c",
+            "#a347e1",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "textColor": [
+            "#666666"
+        ],
+        "textColorDefault": true,
+        "gridColor": [
+            "#e5e5e5"
+        ],
+        "gridColorDefault": true,
+        "width": "9",
+        "height": "6",
+        "className": "",
+        "interpolation": "smooth",
+        "x": 720,
+        "y": 280,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "sen_gauge_lux",
+        "type": "ui-gauge",
+        "z": "sen_tab_001",
+        "name": "Intensidad Luminosa",
+        "group": "sen_grp_lux",
+        "order": 1,
+        "value": "payload",
+        "valueType": "msg",
+        "width": 3,
+        "height": 3,
+        "gtype": "gauge-34",
+        "gstyle": "needle",
+        "title": "Intensidad Luminosa",
+        "alwaysShowTitle": false,
+        "floatingTitlePosition": "top-left",
+        "units": "Lux",
+        "icon": "",
+        "prefix": "",
+        "suffix": "",
+        "segments": [
+            {
+                "from": "0",
+                "color": "#404040",
+                "text": "",
+                "textType": "label"
+            },
+            {
+                "from": "500",
+                "color": "#ffc800",
+                "text": "",
+                "textType": "label"
+            },
+            {
+                "from": "1500",
+                "color": "#5cd65c",
+                "text": "",
+                "textType": "label"
+            }
+        ],
+        "min": "0",
+        "max": "2500",
+        "sizeThickness": 16,
+        "sizeGap": 4,
+        "sizeKeyThickness": 8,
+        "styleRounded": true,
+        "styleGlow": false,
+        "className": "",
+        "x": 700,
+        "y": 340,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "sen_chart_lux",
+        "type": "ui-chart",
+        "z": "sen_tab_001",
+        "group": "sen_grp_lux",
+        "name": "Historico Luminosidad",
+        "label": "Intensidad Luminosa (Lux)",
+        "order": 2,
+        "chartType": "line",
+        "category": "topic",
+        "categoryType": "msg",
+        "xAxisLabel": "",
+        "xAxisProperty": "",
+        "xAxisPropertyType": "timestamp",
+        "xAxisType": "time",
+        "xAxisFormat": "",
+        "xAxisFormatType": "{HH}:{mm}:{ss}",
+        "xmin": "",
+        "xmax": "",
+        "yAxisLabel": "",
+        "yAxisProperty": "payload",
+        "yAxisPropertyType": "msg",
+        "ymin": "0",
+        "ymax": "1500",
+        "bins": 10,
+        "action": "append",
+        "stackSeries": false,
+        "pointShape": "circle",
+        "pointRadius": 3,
+        "showLegend": true,
+        "removeOlder": "24",
+        "removeOlderUnit": "3600",
+        "removeOlderPoints": "",
+        "colors": [
+            "#ff7f0e",
+            "#0095ff",
+            "#ff0000",
+            "#2ca02c",
+            "#a347e1",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "textColor": [
+            "#666666"
+        ],
+        "textColorDefault": true,
+        "gridColor": [
+            "#e5e5e5"
+        ],
+        "gridColorDefault": true,
+        "width": "9",
+        "height": "6",
+        "className": "",
+        "interpolation": "smooth",
+        "x": 720,
+        "y": 380,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "sen_tabla",
+        "type": "ui-table",
+        "z": "sen_tab_001",
+        "group": "sen_grp_tabla",
+        "name": "Tabla Sensores",
+        "label": "Data de la estación metereológica",
+        "order": 1,
+        "width": 12,
+        "height": 8,
+        "maxrows": "10",
+        "passthru": false,
+        "autocols": false,
+        "showSearch": true,
+        "selectionType": "none",
+        "columns": [
+            {
+                "key": "fecha",
+                "keyType": "key",
+                "title": "Fecha",
+                "type": "text",
+                "width": "",
+                "align": "left"
+            },
+            {
+                "key": "temperatura",
+                "keyType": "key",
+                "title": "Temperatura",
+                "type": "text",
+                "width": "",
+                "align": "left"
+            },
+            {
+                "key": "humedad",
+                "keyType": "key",
+                "title": "Humedad (%)",
+                "type": "text",
+                "width": "",
+                "align": "left"
+            },
+            {
+                "key": "luminosidad",
+                "keyType": "key",
+                "title": "Intensidad Luminosa",
+                "type": "text",
+                "width": "",
+                "align": "left"
+            },
+            {
+                "key": "presion",
+                "keyType": "key",
+                "title": "Presion Atmosferica",
+                "type": "text",
+                "width": "",
+                "align": "left"
+            },
+            {
+                "key": "uv",
+                "keyType": "key",
+                "title": "Radiación UV",
+                "type": "text",
+                "width": "",
+                "align": "left"
+            }
+        ],
+        "mobileBreakpoint": 767,
+        "mobileBreakpointType": "defaults",
+        "action": "replace",
+        "className": "",
+        "x": 690,
+        "y": 440,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "04636c879b8896b0",
+        "type": "firebase-out",
+        "z": "sen_tab_001",
+        "name": "",
+        "database": "6b6d4f963cd0f255",
+        "path": "sensores/ultima_lectura",
+        "pathType": "str",
+        "priority": "1",
+        "queryType": "set",
+        "x": 380,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "47b902e361cabe52",
+        "type": "firebase-out",
+        "z": "sen_tab_001",
+        "name": "",
+        "database": "6b6d4f963cd0f255",
+        "path": "sensores/historial",
+        "pathType": "str",
+        "priority": "1",
+        "queryType": "push",
+        "x": 290,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "sen_uv_texto",
+        "type": "ui-text",
+        "z": "sen_tab_001",
+        "group": "sen_grp_uv",
+        "order": 1,
+        "width": 6,
+        "height": 1,
+        "name": "UV Intensity",
+        "label": "Radiación UV:",
+        "format": "{{msg.payload}}",
+        "layout": "row-center",
+        "style": true,
+        "font": "",
+        "fontSize": "22",
+        "color": "#0d3349",
+        "className": "",
+        "x": 690,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "a8f386f34b537888",
+        "type": "mqtt-broker",
+        "name": "EMQX",
+        "broker": "broker.emqx.io",
+        "port": 1883,
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": 4,
+        "keepalive": 60,
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "sen_grp_baro",
+        "type": "ui-group",
+        "name": "Barometro",
+        "page": "sen_page_001",
+        "width": "6",
+        "height": "1",
+        "order": 1,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "sen_grp_ht",
+        "type": "ui-group",
+        "name": "Humedad y Temperatura",
+        "page": "sen_page_001",
+        "width": "12",
+        "height": "1",
+        "order": 3,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "sen_grp_lux",
+        "type": "ui-group",
+        "name": "Intensidad Luminosa",
+        "page": "sen_page_001",
+        "width": "12",
+        "height": "1",
+        "order": 4,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "sen_grp_tabla",
+        "type": "ui-group",
+        "name": "Data de los sensores",
+        "page": "sen_page_001",
+        "width": "12",
+        "height": "1",
+        "order": 5,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "6b6d4f963cd0f255",
+        "type": "firebase-config",
+        "name": "My Database",
+        "authType": "privateKey",
+        "claims": {},
+        "createUser": false,
+        "status": {
+            "firestore": false,
+            "storage": false
+        },
+        "useClaims": false
+    },
+    {
+        "id": "sen_grp_uv",
+        "type": "ui-group",
+        "name": "UV Sensor",
+        "page": "sen_page_001",
+        "width": "6",
+        "height": "1",
+        "order": 2,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "sen_page_001",
+        "type": "ui-page",
+        "name": "Sensor data",
+        "ui": "f49221ce38e40c07",
+        "path": "/sensores",
+        "icon": "mdi-thermometer",
+        "layout": "grid",
+        "theme": "d91eafa15f89a2e5",
+        "breakpoints": [
+            {
+                "name": "Default",
+                "px": "0",
+                "cols": "3"
+            },
+            {
+                "name": "Tablet",
+                "px": "576",
+                "cols": "6"
+            },
+            {
+                "name": "Small Desktop",
+                "px": "768",
+                "cols": "9"
+            },
+            {
+                "name": "Desktop",
+                "px": "1024",
+                "cols": "12"
+            }
+        ],
+        "order": 2,
+        "className": "",
+        "visible": "true",
+        "disabled": "false"
+    },
+    {
+        "id": "f49221ce38e40c07",
+        "type": "ui-base",
+        "name": "My Dashboard",
+        "path": "/dashboard",
+        "appIcon": "",
+        "includeClientData": true,
+        "acceptsClientConfig": [
+            "ui-notification",
+            "ui-control"
+        ],
+        "showPathInSidebar": false,
+        "headerContent": "page",
+        "navigationStyle": "default",
+        "titleBarStyle": "default",
+        "showReconnectNotification": true,
+        "notificationDisplayTime": 1,
+        "showDisconnectNotification": true,
+        "allowInstall": false
+    },
+    {
+        "id": "d91eafa15f89a2e5",
+        "type": "ui-theme",
+        "name": "Tema Proyecto IoT",
+        "colors": {
+            "surface": "#0F3D57",
+            "primary": "#0094CE",
+            "bgPage": "#15577A",
+            "groupBg": "#DCE6EB",
+            "groupOutline": "#9FB8C4"
+        },
+        "sizes": {
+            "density": "default",
+            "pagePadding": "16px",
+            "groupGap": "14px",
+            "groupBorderRadius": "10px",
+            "widgetGap": "12px"
+        }
+    },
+    {
+        "id": "fe8dd921ecfe5252",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "@flowfuse/node-red-dashboard": "1.30.2",
+            "@gogovega/node-red-contrib-firebase-realtime-database": "0.8.2",
+            "@gogovega/firebase-config-node": "0.3.5"
+        }
+    }
+]

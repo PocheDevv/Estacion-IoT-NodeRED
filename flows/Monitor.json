@@ -1,0 +1,1101 @@
+[
+    {
+        "id": "mon_tab_001",
+        "type": "tab",
+        "label": "Monitor del sistema",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "mon_inj_host",
+        "type": "inject",
+        "z": "mon_tab_001",
+        "name": "Pedir Info Host",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "10",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 1,
+        "topic": "isil/stations/001/commands",
+        "payload": "{\"key\":\"host\"}",
+        "payloadType": "json",
+        "x": 150,
+        "y": 120,
+        "wires": [
+            [
+                "mon_mqtt_out"
+            ]
+        ]
+    },
+    {
+        "id": "mon_mqtt_out",
+        "type": "mqtt out",
+        "z": "mon_tab_001",
+        "name": "Comandos IoT",
+        "topic": "",
+        "qos": "0",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "a8f386f34b537888",
+        "x": 400,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "mon_mqtt_in_host",
+        "type": "mqtt in",
+        "z": "mon_tab_001",
+        "name": "Info del Host",
+        "topic": "isil/stations/001/commands/host",
+        "qos": "0",
+        "datatype": "json",
+        "broker": "a8f386f34b537888",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 150,
+        "y": 260,
+        "wires": [
+            [
+                "mon_func_host"
+            ]
+        ]
+    },
+    {
+        "id": "mon_func_host",
+        "type": "function",
+        "z": "mon_tab_001",
+        "name": "Parsear datos host",
+        "func": "var host = msg.payload.host || {};\nvar drive = msg.payload.drive || {};\nvar cpu = msg.payload.cpu || {};\nvar memory = msg.payload.memory || {};\n\nvar cpuTemp = 0;\nif (cpu.cpu_temp) {\n    cpuTemp = parseFloat(cpu.cpu_temp.replace('temp=','').replace(\"'C\",\"\")) || 0;\n}\n\nvar diskUsage = 0;\nif (drive.disk_usage) {\n    diskUsage = parseFloat(drive.disk_usage.replace('%','')) || 0;\n}\n\nvar cpuUsage = parseFloat(cpu.cpu_usage) || 0;\nvar memUsage = memory.mem_usage || 0;\n\nreturn [\n    [{payload: host.hostname || '---'}],\n    [{payload: host.address || '---'}],\n    [{payload: host.time || '---'}],\n    [{payload: drive.disk_total || '---'}],\n    [{payload: drive.disk_available || '---'}],\n    [{payload: drive.disk_used || '---'}],\n    [{payload: drive.disk_usage || '---'}],\n    [{payload: diskUsage}],\n    [{payload: cpuUsage, topic: 'CPU'}],\n    [{payload: cpuTemp, topic: 'TEMP CPU'}],\n    [{payload: memUsage, topic: 'RAM'}]\n];",
+        "outputs": 11,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 400,
+        "y": 260,
+        "wires": [
+            [
+                "mon_txt_hn"
+            ],
+            [
+                "mon_txt_ip"
+            ],
+            [
+                "mon_txt_fecha"
+            ],
+            [
+                "mon_txt_cap"
+            ],
+            [
+                "mon_txt_espd"
+            ],
+            [
+                "mon_txt_espu"
+            ],
+            [
+                "mon_txt_pct"
+            ],
+            [
+                "mon_gauge_disp"
+            ],
+            [
+                "mon_gauge_cpu",
+                "mon_chart_cpu"
+            ],
+            [
+                "mon_gauge_temp",
+                "mon_chart_temp"
+            ],
+            [
+                "mon_gauge_mem",
+                "mon_chart_ram"
+            ]
+        ]
+    },
+    {
+        "id": "mon_txt_hn",
+        "type": "ui-text",
+        "z": "mon_tab_001",
+        "group": "mon_grp_sis",
+        "order": 1,
+        "width": 3,
+        "height": 1,
+        "name": "Hostname",
+        "label": "Hostname:",
+        "format": "{{msg.payload}}",
+        "layout": "row-left",
+        "style": false,
+        "font": "",
+        "fontSize": 16,
+        "color": "#717171",
+        "className": "",
+        "x": 700,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "mon_txt_ip",
+        "type": "ui-text",
+        "z": "mon_tab_001",
+        "group": "mon_grp_sis",
+        "order": 2,
+        "width": 3,
+        "height": 1,
+        "name": "IP Address",
+        "label": "IP Address:",
+        "format": "{{msg.payload}}",
+        "layout": "row-left",
+        "style": false,
+        "font": "",
+        "fontSize": 16,
+        "color": "#717171",
+        "className": "",
+        "x": 700,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "mon_txt_fecha",
+        "type": "ui-text",
+        "z": "mon_tab_001",
+        "group": "mon_grp_sis",
+        "order": 3,
+        "width": 3,
+        "height": 1,
+        "name": "Fecha",
+        "label": "Fecha:",
+        "format": "{{msg.payload}}",
+        "layout": "row-left",
+        "style": false,
+        "font": "",
+        "fontSize": 16,
+        "color": "#717171",
+        "className": "",
+        "x": 700,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "mon_txt_cap",
+        "type": "ui-text",
+        "z": "mon_tab_001",
+        "group": "mon_grp_sis",
+        "order": 4,
+        "width": 3,
+        "height": 1,
+        "name": "Capacidad",
+        "label": "Capacidad:",
+        "format": "{{msg.payload}}",
+        "layout": "row-left",
+        "style": false,
+        "font": "",
+        "fontSize": 16,
+        "color": "#717171",
+        "className": "",
+        "x": 700,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "mon_txt_espd",
+        "type": "ui-text",
+        "z": "mon_tab_001",
+        "group": "mon_grp_sis",
+        "order": 5,
+        "width": 3,
+        "height": 1,
+        "name": "Espacio Disponible",
+        "label": "Espacio disponible:",
+        "format": "{{msg.payload}}",
+        "layout": "row-left",
+        "style": false,
+        "font": "",
+        "fontSize": 16,
+        "color": "#717171",
+        "className": "",
+        "x": 700,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "mon_txt_espu",
+        "type": "ui-text",
+        "z": "mon_tab_001",
+        "group": "mon_grp_sis",
+        "order": 6,
+        "width": 3,
+        "height": 1,
+        "name": "Espacio Usado",
+        "label": "Espacio usado:",
+        "format": "{{msg.payload}}",
+        "layout": "row-left",
+        "style": false,
+        "font": "",
+        "fontSize": 16,
+        "color": "#717171",
+        "className": "",
+        "x": 700,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "mon_txt_pct",
+        "type": "ui-text",
+        "z": "mon_tab_001",
+        "group": "mon_grp_sis",
+        "order": 7,
+        "width": 3,
+        "height": 1,
+        "name": "Porcentaje Uso",
+        "label": "% Uso:",
+        "format": "{{msg.payload}}",
+        "layout": "row-left",
+        "style": false,
+        "font": "",
+        "fontSize": 16,
+        "color": "#717171",
+        "className": "",
+        "x": 700,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "mon_gauge_disp",
+        "type": "ui-gauge",
+        "z": "mon_tab_001",
+        "name": "Disponible",
+        "group": "mon_grp_sis",
+        "order": 8,
+        "value": "payload",
+        "valueType": "msg",
+        "width": 3,
+        "height": 3,
+        "gtype": "gauge-34",
+        "gstyle": "needle",
+        "title": "Disponible",
+        "alwaysShowTitle": false,
+        "floatingTitlePosition": "top-left",
+        "units": "%",
+        "icon": "",
+        "prefix": "",
+        "suffix": "",
+        "segments": [
+            {
+                "from": "0",
+                "color": "#ea5353",
+                "text": "",
+                "textType": "label"
+            },
+            {
+                "from": "30",
+                "color": "#ffc800",
+                "text": "",
+                "textType": "label"
+            },
+            {
+                "from": "60",
+                "color": "#5cd65c",
+                "text": "",
+                "textType": "label"
+            }
+        ],
+        "min": "0",
+        "max": "100",
+        "sizeThickness": 16,
+        "sizeGap": 4,
+        "sizeKeyThickness": 8,
+        "styleRounded": true,
+        "styleGlow": false,
+        "className": "",
+        "x": 700,
+        "y": 380,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "mon_gauge_cpu",
+        "type": "ui-gauge",
+        "z": "mon_tab_001",
+        "name": "% Uso CPU",
+        "group": "mon_grp_his",
+        "order": 1,
+        "value": "payload",
+        "valueType": "msg",
+        "width": "2",
+        "height": "4",
+        "gtype": "gauge-34",
+        "gstyle": "needle",
+        "title": "% Uso CPU",
+        "alwaysShowTitle": false,
+        "floatingTitlePosition": "top-left",
+        "units": "%",
+        "icon": "",
+        "prefix": "",
+        "suffix": "",
+        "segments": [
+            {
+                "from": "0",
+                "color": "#5cd65c",
+                "text": "",
+                "textType": "label"
+            },
+            {
+                "from": "50",
+                "color": "#ffc800",
+                "text": "",
+                "textType": "label"
+            },
+            {
+                "from": "80",
+                "color": "#ea5353",
+                "text": "",
+                "textType": "label"
+            }
+        ],
+        "min": "0",
+        "max": "100",
+        "sizeThickness": 16,
+        "sizeGap": 4,
+        "sizeKeyThickness": 8,
+        "styleRounded": true,
+        "styleGlow": false,
+        "className": "",
+        "x": 700,
+        "y": 420,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "mon_chart_cpu",
+        "type": "ui-chart",
+        "z": "mon_tab_001",
+        "group": "mon_grp_his",
+        "name": "CPU Historico",
+        "label": "CPU",
+        "order": 2,
+        "chartType": "line",
+        "category": "topic",
+        "categoryType": "msg",
+        "xAxisLabel": "",
+        "xAxisProperty": "",
+        "xAxisPropertyType": "timestamp",
+        "xAxisType": "time",
+        "xAxisFormat": "",
+        "xAxisFormatType": "{HH}:{mm}:{ss}",
+        "xmin": "",
+        "xmax": "",
+        "yAxisLabel": "",
+        "yAxisProperty": "payload",
+        "yAxisPropertyType": "msg",
+        "ymin": "0",
+        "ymax": "100",
+        "bins": 10,
+        "action": "append",
+        "stackSeries": false,
+        "pointShape": "circle",
+        "pointRadius": 4,
+        "showLegend": true,
+        "removeOlder": "2",
+        "removeOlderUnit": "3600",
+        "removeOlderPoints": "",
+        "colors": [
+            "#0095ff",
+            "#ff0000",
+            "#ff7f0e",
+            "#2ca02c",
+            "#a347e1",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "textColor": [
+            "#666666"
+        ],
+        "textColorDefault": true,
+        "gridColor": [
+            "#e5e5e5"
+        ],
+        "gridColorDefault": true,
+        "width": "4",
+        "height": "4",
+        "className": "",
+        "interpolation": "smooth",
+        "x": 700,
+        "y": 460,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "mon_gauge_temp",
+        "type": "ui-gauge",
+        "z": "mon_tab_001",
+        "name": "Temp. CPU",
+        "group": "mon_grp_his",
+        "order": 3,
+        "value": "payload",
+        "valueType": "msg",
+        "width": "2",
+        "height": 3,
+        "gtype": "gauge-34",
+        "gstyle": "needle",
+        "title": "Temp. CPU",
+        "alwaysShowTitle": false,
+        "floatingTitlePosition": "top-left",
+        "units": "°C",
+        "icon": "",
+        "prefix": "",
+        "suffix": "",
+        "segments": [
+            {
+                "from": "0",
+                "color": "#5cd65c",
+                "text": "",
+                "textType": "label"
+            },
+            {
+                "from": "50",
+                "color": "#ffc800",
+                "text": "",
+                "textType": "label"
+            },
+            {
+                "from": "75",
+                "color": "#ea5353",
+                "text": "",
+                "textType": "label"
+            }
+        ],
+        "min": "0",
+        "max": "100",
+        "sizeThickness": 16,
+        "sizeGap": 4,
+        "sizeKeyThickness": 8,
+        "styleRounded": true,
+        "styleGlow": false,
+        "className": "",
+        "x": 700,
+        "y": 500,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "mon_chart_temp",
+        "type": "ui-chart",
+        "z": "mon_tab_001",
+        "group": "mon_grp_his",
+        "name": "Temp CPU Historico",
+        "label": "TEMP CPU",
+        "order": 4,
+        "chartType": "line",
+        "category": "topic",
+        "categoryType": "msg",
+        "xAxisLabel": "",
+        "xAxisProperty": "",
+        "xAxisPropertyType": "timestamp",
+        "xAxisType": "time",
+        "xAxisFormat": "",
+        "xAxisFormatType": "{HH}:{mm}:{ss}",
+        "xmin": "",
+        "xmax": "",
+        "yAxisLabel": "",
+        "yAxisProperty": "payload",
+        "yAxisPropertyType": "msg",
+        "ymin": "20",
+        "ymax": "80",
+        "bins": 10,
+        "action": "append",
+        "stackSeries": false,
+        "pointShape": "circle",
+        "pointRadius": 4,
+        "showLegend": true,
+        "removeOlder": "2",
+        "removeOlderUnit": "3600",
+        "removeOlderPoints": "",
+        "colors": [
+            "#ff0000",
+            "#0095ff",
+            "#ff7f0e",
+            "#2ca02c",
+            "#a347e1",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "textColor": [
+            "#666666"
+        ],
+        "textColorDefault": true,
+        "gridColor": [
+            "#e5e5e5"
+        ],
+        "gridColorDefault": true,
+        "width": "4",
+        "height": "3",
+        "className": "",
+        "interpolation": "smooth",
+        "x": 700,
+        "y": 540,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "mon_gauge_mem",
+        "type": "ui-gauge",
+        "z": "mon_tab_001",
+        "name": "Memory Usage",
+        "group": "mon_grp_his",
+        "order": 5,
+        "value": "payload",
+        "valueType": "msg",
+        "width": "2",
+        "height": 3,
+        "gtype": "gauge-34",
+        "gstyle": "needle",
+        "title": "Memory Usage",
+        "alwaysShowTitle": false,
+        "floatingTitlePosition": "top-left",
+        "units": "%",
+        "icon": "",
+        "prefix": "",
+        "suffix": "",
+        "segments": [
+            {
+                "from": "0",
+                "color": "#5cd65c",
+                "text": "",
+                "textType": "label"
+            },
+            {
+                "from": "60",
+                "color": "#ffc800",
+                "text": "",
+                "textType": "label"
+            },
+            {
+                "from": "85",
+                "color": "#ea5353",
+                "text": "",
+                "textType": "label"
+            }
+        ],
+        "min": "0",
+        "max": "100",
+        "sizeThickness": 16,
+        "sizeGap": 4,
+        "sizeKeyThickness": 8,
+        "styleRounded": true,
+        "styleGlow": false,
+        "className": "",
+        "x": 700,
+        "y": 580,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "mon_chart_ram",
+        "type": "ui-chart",
+        "z": "mon_tab_001",
+        "group": "mon_grp_his",
+        "name": "RAM Historico",
+        "label": "RAM",
+        "order": 6,
+        "chartType": "line",
+        "category": "topic",
+        "categoryType": "msg",
+        "xAxisLabel": "",
+        "xAxisProperty": "",
+        "xAxisPropertyType": "timestamp",
+        "xAxisType": "time",
+        "xAxisFormat": "",
+        "xAxisFormatType": "{HH}:{mm}:{ss}",
+        "xmin": "",
+        "xmax": "",
+        "yAxisLabel": "",
+        "yAxisProperty": "payload",
+        "yAxisPropertyType": "msg",
+        "ymin": "0",
+        "ymax": "100",
+        "bins": 10,
+        "action": "append",
+        "stackSeries": false,
+        "pointShape": "circle",
+        "pointRadius": 4,
+        "showLegend": true,
+        "removeOlder": "2",
+        "removeOlderUnit": "3600",
+        "removeOlderPoints": "",
+        "colors": [
+            "#2ca02c",
+            "#0095ff",
+            "#ff7f0e",
+            "#ff0000",
+            "#a347e1",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "textColor": [
+            "#666666"
+        ],
+        "textColorDefault": true,
+        "gridColor": [
+            "#e5e5e5"
+        ],
+        "gridColorDefault": true,
+        "width": "4",
+        "height": "3",
+        "className": "",
+        "interpolation": "smooth",
+        "x": 700,
+        "y": 620,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "mon_btn_speed",
+        "type": "ui-button",
+        "z": "mon_tab_001",
+        "group": "mon_grp_opc",
+        "name": "Iniciar Test",
+        "label": "Iniciar Test",
+        "order": 1,
+        "width": 3,
+        "height": "2",
+        "emulateClick": false,
+        "tooltip": "",
+        "color": "#ffffff",
+        "bgcolor": "#0094CE",
+        "className": "",
+        "icon": "",
+        "iconPosition": "left",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "buttonColor": "",
+        "textColor": "",
+        "iconColor": "",
+        "enableClick": true,
+        "enablePointerdown": false,
+        "pointerdownPayload": "",
+        "pointerdownPayloadType": "str",
+        "enablePointerup": false,
+        "pointerupPayload": "",
+        "pointerupPayloadType": "str",
+        "x": 150,
+        "y": 420,
+        "wires": [
+            [
+                "mon_chg_speed"
+            ]
+        ]
+    },
+    {
+        "id": "mon_chg_speed",
+        "type": "change",
+        "z": "mon_tab_001",
+        "name": "Set speedtest cmd",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "{\"key\":\"speedtest\"}",
+                "tot": "json"
+            },
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "isil/stations/001/commands",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 380,
+        "y": 420,
+        "wires": [
+            [
+                "mon_mqtt_out"
+            ]
+        ]
+    },
+    {
+        "id": "mon_txt_lat",
+        "type": "ui-text",
+        "z": "mon_tab_001",
+        "group": "mon_grp_opc",
+        "order": 2,
+        "width": 3,
+        "height": "2",
+        "name": "Latencia",
+        "label": "Latencia",
+        "format": "{{msg.payload}}",
+        "layout": "row-center",
+        "style": false,
+        "font": "",
+        "fontSize": 14,
+        "color": "#717171",
+        "wrapText": false,
+        "className": "",
+        "value": "payload",
+        "valueType": "msg",
+        "x": 940,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "mon_txt_dl",
+        "type": "ui-text",
+        "z": "mon_tab_001",
+        "group": "mon_grp_opc",
+        "order": 3,
+        "width": 3,
+        "height": "2",
+        "name": "Descarga",
+        "label": "Descarga",
+        "format": "{{msg.payload}}",
+        "layout": "row-center",
+        "style": false,
+        "font": "",
+        "fontSize": 14,
+        "color": "#717171",
+        "wrapText": false,
+        "className": "",
+        "value": "payload",
+        "valueType": "msg",
+        "x": 960,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "mon_txt_ul",
+        "type": "ui-text",
+        "z": "mon_tab_001",
+        "group": "mon_grp_opc",
+        "order": 4,
+        "width": 3,
+        "height": "2",
+        "name": "Subida",
+        "label": "Subida",
+        "format": "{{msg.payload}}",
+        "layout": "row-center",
+        "style": false,
+        "font": "",
+        "fontSize": 14,
+        "color": "#717171",
+        "wrapText": false,
+        "className": "",
+        "value": "payload",
+        "valueType": "msg",
+        "x": 920,
+        "y": 560,
+        "wires": []
+    },
+    {
+        "id": "mon_mqtt_in_speed",
+        "type": "mqtt in",
+        "z": "mon_tab_001",
+        "name": "Speed Test Result",
+        "topic": "isil/stations/001/commands/speedtest",
+        "qos": "0",
+        "datatype": "json",
+        "broker": "a8f386f34b537888",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 150,
+        "y": 500,
+        "wires": [
+            [
+                "mon_func_speed"
+            ]
+        ]
+    },
+    {
+        "id": "mon_func_speed",
+        "type": "function",
+        "z": "mon_tab_001",
+        "name": "Parsear speed test",
+        "func": "var st = msg.payload.speedtest || {};\nreturn [\n    [{payload: st.ping || '---'}],\n    [{payload: st.download || '---'}],\n    [{payload: st.upload || '---'}]\n];",
+        "outputs": 3,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 380,
+        "y": 500,
+        "wires": [
+            [
+                "mon_txt_lat"
+            ],
+            [
+                "mon_txt_dl"
+            ],
+            [
+                "mon_txt_ul"
+            ]
+        ]
+    },
+    {
+        "id": "mon_btn_restart",
+        "type": "ui-button",
+        "z": "mon_tab_001",
+        "group": "mon_grp_opc",
+        "name": "Reiniciar dispositivo",
+        "label": "Reiniciar dispositivo",
+        "order": 5,
+        "width": 3,
+        "height": "2",
+        "emulateClick": false,
+        "tooltip": "",
+        "color": "#ffffff",
+        "bgcolor": "#0094CE",
+        "className": "",
+        "icon": "",
+        "iconPosition": "left",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "buttonColor": "",
+        "textColor": "",
+        "iconColor": "",
+        "enableClick": true,
+        "enablePointerdown": false,
+        "pointerdownPayload": "",
+        "pointerdownPayloadType": "str",
+        "enablePointerup": false,
+        "pointerupPayload": "",
+        "pointerupPayloadType": "str",
+        "x": 150,
+        "y": 580,
+        "wires": [
+            [
+                "mon_chg_restart"
+            ]
+        ]
+    },
+    {
+        "id": "mon_chg_restart",
+        "type": "change",
+        "z": "mon_tab_001",
+        "name": "Set restart cmd",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "{\"key\":\"restart\"}",
+                "tot": "json"
+            },
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "isil/stations/001/commands",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 380,
+        "y": 580,
+        "wires": [
+            [
+                "mon_mqtt_out"
+            ]
+        ]
+    },
+    {
+        "id": "a8f386f34b537888",
+        "type": "mqtt-broker",
+        "name": "EMQX",
+        "broker": "broker.emqx.io",
+        "port": 1883,
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": 4,
+        "keepalive": 60,
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "mon_grp_sis",
+        "type": "ui-group",
+        "name": "Sistema",
+        "page": "mon_page_001",
+        "width": "3",
+        "height": "1",
+        "order": 1,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "mon_grp_his",
+        "type": "ui-group",
+        "name": "Historico",
+        "page": "mon_page_001",
+        "width": "6",
+        "height": "1",
+        "order": 2,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "mon_grp_opc",
+        "type": "ui-group",
+        "name": "Opciones",
+        "page": "mon_page_001",
+        "width": "3",
+        "height": "1",
+        "order": 3,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "mon_page_001",
+        "type": "ui-page",
+        "name": "Monitor del sistema",
+        "ui": "f49221ce38e40c07",
+        "path": "/monitor",
+        "icon": "mdi-monitor-dashboard",
+        "layout": "grid",
+        "theme": "d91eafa15f89a2e5",
+        "breakpoints": [
+            {
+                "name": "Default",
+                "px": "0",
+                "cols": "3"
+            },
+            {
+                "name": "Tablet",
+                "px": "576",
+                "cols": "6"
+            },
+            {
+                "name": "Small Desktop",
+                "px": "768",
+                "cols": "9"
+            },
+            {
+                "name": "Desktop",
+                "px": "1024",
+                "cols": "12"
+            }
+        ],
+        "order": 1,
+        "className": "",
+        "visible": "true",
+        "disabled": "false"
+    },
+    {
+        "id": "f49221ce38e40c07",
+        "type": "ui-base",
+        "name": "My Dashboard",
+        "path": "/dashboard",
+        "appIcon": "",
+        "includeClientData": true,
+        "acceptsClientConfig": [
+            "ui-notification",
+            "ui-control"
+        ],
+        "showPathInSidebar": false,
+        "headerContent": "page",
+        "navigationStyle": "default",
+        "titleBarStyle": "default",
+        "showReconnectNotification": true,
+        "notificationDisplayTime": 1,
+        "showDisconnectNotification": true,
+        "allowInstall": false
+    },
+    {
+        "id": "d91eafa15f89a2e5",
+        "type": "ui-theme",
+        "name": "Tema Proyecto IoT",
+        "colors": {
+            "surface": "#0F3D57",
+            "primary": "#0094CE",
+            "bgPage": "#15577A",
+            "groupBg": "#DCE6EB",
+            "groupOutline": "#9FB8C4"
+        },
+        "sizes": {
+            "density": "default",
+            "pagePadding": "16px",
+            "groupGap": "14px",
+            "groupBorderRadius": "10px",
+            "widgetGap": "12px"
+        }
+    },
+    {
+        "id": "768d486664f4c8e0",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "@flowfuse/node-red-dashboard": "1.30.2"
+        }
+    }
+]

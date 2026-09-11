@@ -1,0 +1,62 @@
+[
+    {
+        "id": "sty_tab_001",
+        "type": "tab",
+        "label": "Estilos",
+        "disabled": false,
+        "info": "CSS global del dashboard",
+        "env": []
+    },
+    {
+        "id": "sty_css_global",
+        "type": "ui-template",
+        "z": "sty_tab_001",
+        "group": "",
+        "page": "",
+        "ui": "f49221ce38e40c07",
+        "name": "CSS Global Dashboard",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "head": "",
+        "format": "/* ===== Fondo general de las paginas ===== */\n.v-main {\n    background-color: #15577A !important;\n}\n\n/* ===== Barra superior (header) ===== */\n.v-app-bar {\n    background-color: #0F3D57 !important;\n    color: #ffffff !important;\n    box-shadow: 0 2px 8px rgba(0,0,0,0.4) !important;\n}\n.v-app-bar .v-toolbar-title, .v-app-bar h1, .v-app-bar span {\n    color: #ffffff !important;\n    font-weight: 600 !important;\n}\n\n/* ===== Menu lateral de navegacion ===== */\n.v-navigation-drawer {\n    background-color: #B9C9CE !important;\n}\n.v-navigation-drawer .v-list-item-title {\n    font-weight: 500 !important;\n    color: #1a2e38 !important;\n}\n.v-navigation-drawer .v-list-item--active {\n    background-color: #8FA8B2 !important;\n}\n\n/* ===== Tarjetas de los grupos ===== */\n.nrdb-ui-group > .v-card {\n    background-color: #DCE6EB !important;\n    border-radius: 10px !important;\n    box-shadow: 0 4px 12px rgba(0,0,0,0.35) !important;\n    border: 1px solid #9FB8C4 !important;\n}\n\n/* ===== Titulos de los grupos ===== */\n.nrdb-ui-group .v-card-title {\n    font-weight: 700 !important;\n    font-size: 1.05rem !important;\n    color: #0d3349 !important;\n}\n\n/* ===== Textos de widgets ===== */\n.nrdb-ui-text .nrdb-ui-text-label {\n    font-weight: 600 !important;\n    color: #23404f !important;\n}\n.nrdb-ui-text .nrdb-ui-text-value {\n    font-weight: 700 !important;\n    color: #0d3349 !important;\n}\n\n/* ===== Botones ===== */\n.nrdb-ui-button .v-btn {\n    border-radius: 6px !important;\n    font-weight: 600 !important;\n    letter-spacing: 0.3px !important;\n    box-shadow: 0 2px 6px rgba(0,0,0,0.25) !important;\n}\n\n/* ===== Tablas ===== */\n.nrdb-ui-table .v-table {\n    background-color: #ffffff !important;\n    border-radius: 8px !important;\n}\n.nrdb-ui-table th {\n    font-weight: 700 !important;\n    color: #0d3349 !important;\n}",
+        "storeOutMessages": true,
+        "passthru": true,
+        "resendOnRefresh": true,
+        "templateScope": "site:style",
+        "className": "",
+        "x": 180,
+        "y": 120,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "f49221ce38e40c07",
+        "type": "ui-base",
+        "name": "My Dashboard",
+        "path": "/dashboard",
+        "appIcon": "",
+        "includeClientData": true,
+        "acceptsClientConfig": [
+            "ui-notification",
+            "ui-control"
+        ],
+        "showPathInSidebar": false,
+        "headerContent": "page",
+        "navigationStyle": "default",
+        "titleBarStyle": "default",
+        "showReconnectNotification": true,
+        "notificationDisplayTime": 1,
+        "showDisconnectNotification": true,
+        "allowInstall": false
+    },
+    {
+        "id": "ac12b721bfda1d59",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "@flowfuse/node-red-dashboard": "1.30.2"
+        }
+    }
+]

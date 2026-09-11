@@ -1,0 +1,131 @@
+[
+    {
+        "id": "map_tab_001",
+        "type": "tab",
+        "label": "Mapa",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "map_template_001",
+        "type": "ui-template",
+        "z": "map_tab_001",
+        "group": "map_grp_001",
+        "page": "",
+        "ui": "",
+        "name": "Mapa Dispositivo IoT",
+        "order": 1,
+        "width": "12",
+        "height": "8",
+        "head": "",
+        "format": "<template>\n  <div style=\"width:100%; height:100%; min-height:340px; border-radius:8px; overflow:hidden;\">\n    <iframe\n      width=\"100%\"\n      height=\"100%\"\n      style=\"min-height:340px; border:0;\"\n      loading=\"lazy\"\n      src=\"https://www.openstreetmap.org/export/embed.html?bbox=-77.0550%2C-12.1130%2C-77.0150%2C-12.0930&layer=mapnik&marker=-12.1030%2C-77.0350\">\n    </iframe>\n    <div style=\"text-align:center; font-size:12px; padding:4px; color:#23404f;\">\n      Estación Meteorológica IoT — Lima, Perú\n    </div>\n  </div>\n</template>",
+        "storeOutMessages": true,
+        "passthru": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 200,
+        "y": 120,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "map_grp_001",
+        "type": "ui-group",
+        "name": "Ubicacion del Dispositivo",
+        "page": "mon_page_001",
+        "width": "12",
+        "height": "7",
+        "order": 4,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "mon_page_001",
+        "type": "ui-page",
+        "name": "Monitor del sistema",
+        "ui": "f49221ce38e40c07",
+        "path": "/monitor",
+        "icon": "mdi-monitor-dashboard",
+        "layout": "grid",
+        "theme": "d91eafa15f89a2e5",
+        "breakpoints": [
+            {
+                "name": "Default",
+                "px": "0",
+                "cols": "3"
+            },
+            {
+                "name": "Tablet",
+                "px": "576",
+                "cols": "6"
+            },
+            {
+                "name": "Small Desktop",
+                "px": "768",
+                "cols": "9"
+            },
+            {
+                "name": "Desktop",
+                "px": "1024",
+                "cols": "12"
+            }
+        ],
+        "order": 1,
+        "className": "",
+        "visible": "true",
+        "disabled": "false"
+    },
+    {
+        "id": "f49221ce38e40c07",
+        "type": "ui-base",
+        "name": "My Dashboard",
+        "path": "/dashboard",
+        "appIcon": "",
+        "includeClientData": true,
+        "acceptsClientConfig": [
+            "ui-notification",
+            "ui-control"
+        ],
+        "showPathInSidebar": false,
+        "headerContent": "page",
+        "navigationStyle": "default",
+        "titleBarStyle": "default",
+        "showReconnectNotification": true,
+        "notificationDisplayTime": 1,
+        "showDisconnectNotification": true,
+        "allowInstall": false
+    },
+    {
+        "id": "d91eafa15f89a2e5",
+        "type": "ui-theme",
+        "name": "Tema Proyecto IoT",
+        "colors": {
+            "surface": "#0F3D57",
+            "primary": "#0094CE",
+            "bgPage": "#15577A",
+            "groupBg": "#DCE6EB",
+            "groupOutline": "#9FB8C4"
+        },
+        "sizes": {
+            "density": "default",
+            "pagePadding": "16px",
+            "groupGap": "14px",
+            "groupBorderRadius": "10px",
+            "widgetGap": "12px"
+        }
+    },
+    {
+        "id": "550b2ef45fafaf5d",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "@flowfuse/node-red-dashboard": "1.30.2"
+        }
+    }
+]
