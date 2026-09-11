@@ -88,9 +88,11 @@ Estos archivos son *flows* de Node-RED, no una aplicación que se compile. Para 
 
 ---
 
-## Contexto académico
+## Autor
 
-Proyecto **grupal** desarrollado para el curso *Soluciones Basadas en Internet de las Cosas* — ISIL.
+**José Gabriel Rosas del Águila (Poche)** — [@PocheDevv](https://github.com/PocheDevv)
 
-**Autor de este repositorio:** José Gabriel Rosas del Águila (Poche) — [@PocheDevv](https://github.com/PocheDevv)
-Responsable de los módulos de **Sensor Data + Firebase**, **Control de Dispositivo** y **Seguridad**.
+Desarrollo del sistema en Node-RED: diseño e implementación de los flujos, el dashboard, la integración MQTT, el almacenamiento en Firebase y la seguridad de acceso.
+
+Proyecto desarrollado para el curso *Soluciones Basadas en Internet de las Cosas* — ISIL.
+
