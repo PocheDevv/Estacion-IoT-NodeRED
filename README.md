@@ -4,7 +4,7 @@ Sistema de monitoreo y control de una estación ambiental **IoT**, construido co
 
 ---
 
-## Arquitectura
+## Arquitecturaa
 
 ```
   Sensor BME680
